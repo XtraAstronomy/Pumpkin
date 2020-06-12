@@ -3,23 +3,20 @@ Python script that uses XSPEC to create synthetic ICM X-ray Spectra
 '''
 
 #--------------------------------IMPORTS---------------------------------------#
-#import xspec
 import numpy as np
 import random
 import os
 from tqdm import tqdm
 from sherpa.astro.ui import *
 #-------------------------------VARIABLES--------------------------------------#
-exp_time = 40  # Exposure Time in Seconds
+exp_time = 300  # Exposure Time in Seconds
 num_spec = 1000
 temp_min = 0.1
-temp_max = 8
+temp_max = 4
 redshift = 0.01
 n_H = 0.01
-output_dir = '/home/carterrhea/Documents/Pumpkin/PCA/StN50Single'
+output_dir = '/your/path/here/StN150Single'
 #-------------------------------FUNCTIONS--------------------------------------#
-#ch = xspec.Xset.chatter
-#ch = 0
 
 def temp_random_gen(temp_min,temp_max,num_spec):
     temp = []
@@ -45,7 +42,6 @@ def create_synthetic_sherpa(num_spec,exp_time,temp,redshift,n_H,metal,ct):
     abs1.nH = n_H
     # Fake Spectra
     fake_pha("faked", arf1, rmf1, exposure=exp_time, grouped=False, backscal=1.0)
-    # print(calc_data_sum(id='faked'))
     # Save as fits file
     save_arrays('sim_data_'+str(ct)+'.fits', [get_model_plot("faked").xlo, get_model_plot("faked").y], ascii=False)
     return None

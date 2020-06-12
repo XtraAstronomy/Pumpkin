@@ -3,7 +3,6 @@ Python script that uses XSPEC to create synthetic ICM X-ray Spectra
 '''
 
 #--------------------------------IMPORTS---------------------------------------#
-#import xspec
 import numpy as np
 import random
 import os
@@ -11,16 +10,13 @@ from tqdm import tqdm
 from sherpa.astro.ui import *
 #-------------------------------VARIABLES--------------------------------------#
 exp_time = 300  # Exposure Time in Seconds
-num_spec = 10000
-temp_min = 1
-temp_max = 8
+num_spec = 1000
+temp_min = 0.1
+temp_max = 4
 redshift = 0.018
 n_H = 0.14
-output_dir = '/export/carterrhea/Documents/Pumpkin/PCA/ACIS03/StN150Double'
+output_dir = '/your/path/here/StN150Double'
 #-------------------------------FUNCTIONS--------------------------------------#
-#ch = xspec.Xset.chatter
-#ch = 0
-
 def temp_random_gen(temp_min,temp_max,num_spec):
     temp = []
     for i in range(num_spec):
@@ -29,7 +25,6 @@ def temp_random_gen(temp_min,temp_max,num_spec):
         ran_val2 = np.round(random.uniform(temp_min, temp_max),2)
         temp.append([ran_val1,ran_val2])
     return temp
-
 
 
 def create_synthetic_sherpa(num_spec,exp_time,temp1,temp2,redshift,n_H,metal,ct):
