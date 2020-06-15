@@ -33,8 +33,8 @@ def create_synthetic_sherpa(num_spec,exp_time,temp1,temp2,redshift,n_H,metal,ct)
     This attaches poisson noise to the data
     '''
     # Read in Calibration arf and rmf files
-    arf1 = unpack_arf("source.arf")
-    rmf1 = unpack_rmf("source.rmf")
+    arf1 = unpack_arf("Chandra_acis/acisi_aimpt_cy21.arf")
+    rmf1 = unpack_rmf("Chandra_acis/acisi_aimpt_cy21.rmf")
     #Set the source
     set_source("faked", xsphabs.abs1*(xsapec.apec1+xsapec.apec2))
     apec1.Redshift = redshift
@@ -47,18 +47,18 @@ def create_synthetic_sherpa(num_spec,exp_time,temp1,temp2,redshift,n_H,metal,ct)
     # Fake Spectra
     fake_pha("faked", arf1, rmf1, exposure=exp_time, grouped=False, backscal=1.0)
     # Save as fits file
-    save_arrays('sim_data_multi_'+str(ct)+'.fits', [get_model_plot("faked").xlo, get_model_plot("faked").y], ascii=False)
+    save_arrays(output_dir+'/'+'sim_data_multi_'+str(ct)+'.fits', [get_model_plot("faked").xlo, get_model_plot("faked").y], ascii=False)
     return None
 
 
 temp = temp_random_gen(temp_min, temp_max, num_spec)
-os.chdir(output_dir)
+# os.chdir(output_dir)
 # Clean out directory
 for item in os.listdir(output_dir):
     if item.endswith(".fits"):
         os.remove(os.path.join(output_dir, item))
 # Save model info to output file
-with open('syn_data_inputs.txt', 'w+') as f_out:
+with open(output_dir+'/'+'syn_data_inputs.txt', 'w+') as f_out:
     f_out.write('id temp1 temp2 redshift n_H \n')
     for i in tqdm(list(range(num_spec))):
         metal = np.random.uniform(0.2, 1.0)

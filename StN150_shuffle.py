@@ -7,10 +7,10 @@ them in a new directory while tracking the spectral properties
 import os
 import shutil
 #------------------------INPUTS---------------------------#
-base_dir = '/export/carterrhea/Documents/Pumpkin/PCA/ACIS03/'
-spec_dirs = [base_dir+'StN150Single', base_dir+'StN150Double', base_dir+'StN150Triple', base_dir+'StN150Quad']
-new_dir = '/export/carterrhea/Documents/Pumpkin/PCA/PCA_ML/ACIS03/StN150'
-out_dir = '/export/carterrhea/Documents/Pumpkin/PCA/PCA_ML/ACIS03/'
+base_dir = '/your/path/here'
+spec_dirs = [base_dir+'StN150Single', base_dir+'StN150Double']
+new_dir = '/your/path/hereStN150'
+out_dir = '/your/path/here'
 
 #----------------------FUNCTIONS--------------------------#
 def relocate(spec_dirs,new_dir,out_dir):
