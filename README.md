@@ -18,7 +18,11 @@ This repository contains all the code required to recreate the Perseus cluster m
 
 1. Download the ObsIDs 3209 and 4289
 2. Merge the two ObsIDs using CIAO, determine region of choice in ds9, and finally use dmcopy to extract a fits image of the region (I called it source.img)
-3. Update TemperatureMapPipeline/Perseus.i --> namely image\_fits and base\_dir
-4. run "python Temperature\_Maps.py Perseus.i"
+3. Update ComponentMap/Perseus.i --> namely image\_fits and base\_dir
+4. Run "python ComponentMap/ExtractSpectra.py ComponentMap/Perseus.i"
 	- This will create a WVT map of your region and extract the spectra of each region for each ObsID (it takes a while)
-	
+5. Run "python ComponentMap/Components.py ComponentMap/Perseus.i"
+	- This will take your WVT map and assign a number of underlying components to each region using our trained algorithm and the extracted spectra
+6. Update Temperatures/Perseus.i with the correct base\_dir and output\_dir
+7. Run "python Temperatures/Temperature_Maps.py Perseus.i"
+ 	- This will calculate the temperatures of each component in each region and create maps of each temperature 
