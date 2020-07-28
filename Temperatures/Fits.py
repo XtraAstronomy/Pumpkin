@@ -363,8 +363,8 @@ def Fitting(base_directory,dir,file_name,num_files,redshift,n_H,Temp_guess, comp
         None
     """
     energy_min = 0.5
-    energy_max = 8.0
-    grouping = 10
+    energy_max = 7.0
+    grouping = 50
     plot_dir = base_directory+'/FitPlots/'
     os.chdir(base_directory)
     # Set output file

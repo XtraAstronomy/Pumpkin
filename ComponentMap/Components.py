@@ -26,6 +26,6 @@ with open(region_file, 'r') as f:
     next(f); next(f)
     num_bins = len(f.readlines())
 # Calculate the number of underlying components in each bin
-#calc_comps(inputs['base_dir'], inputs['ObsIDs'], inputs['source_file'], inputs['output_dir'], classifier, pca, num_bins)
+calc_comps(inputs['base_dir'], inputs['ObsIDs'], inputs['source_file'], inputs['output_dir'], classifier, pca, num_bins)
 # Create fits image
 create_image_fits(inputs['base_dir'],inputs['image_fits'], os.getcwd(), inputs['WVT_data']+'.txt','/final_classification.txt')

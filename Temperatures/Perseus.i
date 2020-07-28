@@ -1,3 +1,5 @@
+WVT_data = WVT_data_source_stn150
+image_fits = source.img
 #--------------------------FITTING---------------------------#
 #----------INPUT DATA------------#
 base_dir = /home/carterrhea/Dropbox/Research/Perseus/ML
