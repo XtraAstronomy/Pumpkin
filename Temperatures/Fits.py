@@ -34,6 +34,7 @@ from sherpa.all import *
 from multiprocessing import Process, JoinableQueue
 from joblib import Parallel, delayed
 from tqdm import tqdm
+from Classes import region
 #TURN OFF ON-SCREEN OUTPUT FROM SHERPA
 import logging
 logger = logging.getLogger("sherpa")
@@ -222,7 +223,7 @@ def obsid_set4(src_model_dict,bkg_model_dict,obsid, obs_count,redshift,nH_val,Te
     freeze(get_model_component('brem' + str(obs_count)).kT)
     return None
 #------------------------------------------------------------------------------#
-def FitXSPEC(spectrum_files,background_files,redshift,n_H,Temp_guess,grouping,spec_count,plot_dir,multi=False):
+def FitXSPEC(spectrum_files,background_files,redshift,n_H,Temp_guess,grouping,spec_count,plot_dir,region, file_to_write, file_min, file_max):
     """
     Function to fit spectra using sherpa and XSPEC
     Args:
@@ -252,9 +253,40 @@ def FitXSPEC(spectrum_files,background_files,redshift,n_H,Temp_guess,grouping,sp
     fit()
     #Get important values
     Temperature = apec1.kT.val
+    Temp_min = Temperature+mins[0]
+    Temp_max = Temperature+maxes[0]
     Abundance = apec1.Abundanc.val;
+    Ab_min = Abundance+mins[1];
+    Ab_max = Abundance+maxes[1]
+    #Calculate norm as average value
+    Norm = 0; Norm_min = 0; Norm_max = 0
+    for id_ in src_ids:
+        Norm += get_model_component('apec'+str(id_)).norm.val #add up values
+        #get errors
+        covar(get_model_component('apec'+str(id_)).norm)
+        mins = list(get_covar_results().parmins)
+        maxes = list(get_covar_results().parmaxes)
+        for val in range(len(mins)):
+            if isFloat(mins[val]) == False:
+                mins[val] = 0.0
+            if isFloat(maxes[val]) == False:
+                maxes[val] = 0.0
+            else:
+                pass
+        Norm_min += mins[0]
+        Norm_max += maxes[0]
+    Norm = Norm/len(src_ids)
+    Norm_min = Norm+Norm_min/len(src_ids)
+    Norm_max = Norm+Norm_max/len(src_ids)
+    # Flux Calculations
+    flux_calculation = sample_flux(get_model_component('apec1'), 0.01, 50.0, num=1000, confidence=90)[0]
+    Flux = flux_calculation[0]
+    Flux_min = flux_calculation[1]
+    Flux_max = flux_calculation[2]
     f = get_fit_results()
     reduced_chi_sq = f.rstat
+    # Add to class instance
+    region.add_fit_data(Temperature,Temp_min,Temp_max,Abundance,Ab_min,Ab_max,Norm,Norm_min,Norm_max,reduced_chi_sq,redshift)
     reset(get_model())
     reset(get_source())
     clean()
@@ -370,6 +402,12 @@ def Fitting(base_directory,dir,file_name,num_files,redshift,n_H,Temp_guess, comp
     # Set output file
     file_to_write = open('final_temperature_fits.csv', 'w+')
     file_to_write.write('Bin, Components, Temperature1, Temperature2, Temperature3, Temperature4, Rchi2\n')
+    file_to_write_total = open('Thermo_fits.csv', 'w+')
+    file_to_write_total.write('Bin, Temperature, Abundance, Density, Pressure, Entropy\n')
+    file_min = open('Thermo_min_fits.csv', 'w+')
+    file_min.write('Bin, Temperature, Abundance, Density, Pressure, Entropy\n')
+    file_max = open('Thermo_max_fits.csv', 'w+')
+    file_max.write('Bin, Temperature, Abundance, Density, Pressure, Entropy\n')
     # Read component map to get dictionary {bin: number of components}
     comp_map = open(component_map, 'r'); next(comp_map)
     components = {}
@@ -381,8 +419,10 @@ def Fitting(base_directory,dir,file_name,num_files,redshift,n_H,Temp_guess, comp
             os.makedirs(plot_dir)
     if os.path.isfile(file_name) == True:
         os.remove(file_name) #remove it
+    regions_ = []
     for bin_i in range(0,num_files):
         print("Fitting model to region "+str(bin_i+1))
+        region_ = region(bin_i)
         spectrum_files = []
         background_files = []
         # Get pha files and background files
@@ -394,7 +434,7 @@ def Fitting(base_directory,dir,file_name,num_files,redshift,n_H,Temp_guess, comp
             # Determine how many fits based on the number of underlying components
             num_components = components[bin_i]
             if num_components == 1:
-                Temperature,Abundance,reduced_chi_sq = FitXSPEC(spectrum_files,background_files,redshift,n_H,Temp_guess,grouping,bin_i,plot_dir)
+                Temperature,Abundance,reduced_chi_sq = FitXSPEC(spectrum_files,background_files,redshift,n_H,Temp_guess,grouping,bin_i,plot_dir,region, file_to_write_total, file_min, file_max)
                 file_to_write.write("%i,%i,%.2E,%.2E,%.2E,%.2E,%.2E\n"%(bin_i,num_components,Temperature,0.0,0.0,0.0,reduced_chi_sq))
             elif num_components == 2:
                 Temperature1,Temperature2,Abundance1,Abundance2,reduced_chi_sq = FitXSPEC_double(spectrum_files,background_files,redshift,n_H,Temp_guess,grouping,bin_i)
@@ -412,3 +452,6 @@ def Fitting(base_directory,dir,file_name,num_files,redshift,n_H,Temp_guess, comp
 
 
     file_to_write.close()
+    file_to_write_total.close()
+    file_min.close()
+    file_max.close()
