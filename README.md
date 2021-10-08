@@ -30,4 +30,5 @@ This repository contains all the code required to recreate the Perseus cluster m
 
 
 This is Pumpkin
-![alt text](https://scontent.fykz2-1.fna.fbcdn.net/v/t1.0-9/92460203_10157331845593892_1711534790894682112_o.jpg?_nc_cat=106&_nc_sid=84a396&_nc_ohc=aNAKpmS6fgQAX9K2vgB&_nc_ht=scontent.fykz2-1.fna&oh=c69224b5f7fce1a282286ffe68f42ecd&oe=5F80D829 "Pumpkin")
+
+![alt text](Pumpkin.jpg)
