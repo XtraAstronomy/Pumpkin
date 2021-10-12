@@ -17,8 +17,8 @@ import tensorflow as tf
 # Read in Spectral Data
 spectra_data = pickle.load(open('/home/carterrhea/pCloudDrive/Research/Chandra-Response/RIM_data/spectra.pkl', 'rb'))
 spectra = [spec[1][0][1][35:550] for spec in spectra_data.items()]
-temperatures = [spec[1][3] for spec in spectra_data.items()]
-abundances = [spec[1][4] for spec in spectra_data.items()]
+temperatures = [round(spec[1][3], 2) for spec in spectra_data.items()]
+abundances = [round(spec[1][4], 2) for spec in spectra_data.items()]
 # ---------- Train and Test Algorithm------------ #
 # Get number of spectra
 syn_num_pass = len(spectra)
@@ -48,7 +48,7 @@ validation_dataset = validation_dataset.batch(BATCH_SIZE)
 test_dataset = test_dataset.batch(BATCH_SIZE)
 
 
-num_epochs = 35
+num_epochs = 10
 prob_bnn_model = create_probablistic_bnn_model(train_size=train_div, hidden_units=[128, 128], num_filters=[4,16], filter_length=[5,3])
 run_experiment(prob_bnn_model, negative_loglikelihood, train_dataset, validation_dataset, test_dataset, num_epochs=num_epochs)
 sample = 10
@@ -66,10 +66,18 @@ lower = (prediction_mean - (1.96 * prediction_stdv)).tolist()
 prediction_stdv = prediction_stdv.tolist()
 
 for idx in range(sample):
+    print("Temperature")
     print(
         f"Prediction mean: {round(prediction_mean[idx][0], 2)}, "
         f"stddev: {round(prediction_stdv[idx][0], 2)}, "
         f"95% CI: [{round(upper[idx][0], 2)} - {round(lower[idx][0], 2)}]"
-        f" - Actual: {targets[idx]}"
+        f" - Actual: {targets[idx][0]}"
+    )
+    print("Metallicity")
+    print(
+        f"Prediction mean: {round(prediction_mean[idx][1], 2)}, "
+        f"stddev: {round(prediction_stdv[idx][1], 2)}, "
+        f"95% CI: [{round(upper[idx][1], 2)} - {round(lower[idx][1], 2)}]"
+        f" - Actual: {targets[idx][1]}"
     )
 
