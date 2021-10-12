@@ -1,0 +1,93 @@
+"""
+File containing the definitions required to train our Bayesian CNN
+The functions are taken from https://keras.io/examples/keras_recipes/bayesian_neural_networks/#probabilistic-bayesian-neural-networks
+"""
+import tensorflow as tf
+import tensorflow.keras as keras
+import tensorflow_probability as tfp
+
+def run_experiment(model, loss, train_dataset, valid_dataset, test_dataset, num_epochs):
+    learning_rate = 0.001
+    model.compile(
+        optimizer=keras.optimizers.RMSprop(learning_rate=learning_rate),
+        loss=loss,
+        metrics=[keras.metrics.RootMeanSquaredError()],
+    )
+
+    print("Start training the model...")
+    model.fit(train_dataset, epochs=num_epochs, validation_data=valid_dataset)
+    print("Model training finished.")
+    _, rmse = model.evaluate(train_dataset, verbose=0)
+    print(f"Train RMSE: {round(rmse, 3)}")
+
+    print("Evaluating model performance...")
+    _, rmse = model.evaluate(test_dataset, verbose=0)
+    print(f"Test RMSE: {round(rmse, 3)}")
+
+# Define the prior weight distribution as Normal of mean=0 and stddev=1.
+# Note that, in this example, the we prior distribution is not trainable,
+# as we fix its parameters.
+def prior(kernel_size, bias_size, dtype=None):
+    n = kernel_size + bias_size
+    prior_model = keras.Sequential(
+        [
+            tfp.layers.DistributionLambda(
+                lambda t: tfp.distributions.MultivariateNormalDiag(
+                    loc=tf.zeros(n), scale_diag=tf.ones(n)
+                )
+            )
+        ]
+    )
+    return prior_model
+
+
+# Define variational posterior weight distribution as multivariate Gaussian.
+# Note that the learnable parameters for this distribution are the means,
+# variances, and covariances.
+def posterior(kernel_size, bias_size, dtype=None):
+    n = kernel_size + bias_size
+    posterior_model = keras.Sequential(
+        [
+            tfp.layers.VariableLayer(
+                tfp.layers.MultivariateNormalTriL.params_size(n), dtype=dtype
+            ),
+            tfp.layers.MultivariateNormalTriL(n),
+        ]
+    )
+    return posterior_model
+
+
+
+def create_probablistic_bnn_model(hidden_units):
+    """
+
+    Args:
+        hidden_units: Number of hidden nodes in each hidden layer (e.x. [128, 128] will make two layers with 128 nodes each)
+
+    Return:
+        Probabilistic Bayesian Neural Network
+    """
+    # Define input which is a vector with 515 elements representing the spectra
+    inputs = keras.Input(shape=(515,))#keras.layers.concatenate(list(inputs.values()))
+    features = keras.layers.BatchNormalization()(input)
+    train_size = len(inputs)
+    # Create hidden layers with weight uncertainty using the DenseVariational layer.
+    for units in (hidden_units):
+        features = tfp.layers.DenseVariational(
+            units=units,
+            make_prior_fn=prior,
+            make_posterior_fn=posterior,
+            kl_weight=1 / train_size,
+            activation="sigmoid",
+        )(features)
+
+    # Create a probabilisticå output (Normal distribution), and use the `Dense` layer
+    # to produce the parameters of the distribution.
+    # We set units=2 to learn both the mean and the variance of the Normal distribution.
+    distribution_params = keras.layers.Dense(units=2)(features)
+    outputs = tfp.layers.IndependentNormal(1)(distribution_params)
+    model = keras.Model(inputs=inputs, outputs=outputs)
+    return model
+
+def negative_loglikelihood(targets, estimated_distribution):
+    return -estimated_distribution.log_prob(targets)
