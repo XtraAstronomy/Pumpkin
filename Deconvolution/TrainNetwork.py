@@ -37,6 +37,7 @@ Valid_labels = np.array((temperatures[train_div:valid_div], abundances[train_div
 validation_dataset = tf.data.Dataset.from_tensor_slices((ValidSet, Valid_labels))
 # Set test data
 TestSet = np.array(spectra[valid_div:])
+print(TestSet.shape)
 TestSet = TestSet.reshape(TestSet.shape[0], TestSet.shape[1], 1)
 TestSetLabels = np.array((temperatures[valid_div:], abundances[valid_div:])).T
 test_dataset = tf.data.Dataset.from_tensor_slices((TestSet, TestSetLabels))
@@ -47,11 +48,11 @@ train_dataset = train_dataset.batch(BATCH_SIZE)
 validation_dataset = validation_dataset.batch(BATCH_SIZE)
 test_dataset = test_dataset.batch(BATCH_SIZE)
 
-
+train_size = train_div
 num_epochs = 10
-prob_bnn_model = create_probablistic_bnn_model(train_size=train_div, hidden_units=[128, 128], num_filters=[4,16], filter_length=[5,3])
+prob_bnn_model = create_probablistic_bnn_model(train_size, hidden_units=[128, 128], num_filters=[4,16], filter_length=[5,3])
 run_experiment(prob_bnn_model, negative_loglikelihood, train_dataset, validation_dataset, test_dataset, num_epochs=num_epochs)
-sample = 10
+sample = 50
 examples, targets = list(test_dataset.unbatch().shuffle(BATCH_SIZE * 10).batch(sample))[
     0
 ]
@@ -64,6 +65,12 @@ prediction_stdv = prediction_distribution.stddev().numpy()
 upper = (prediction_mean + (1.96 * prediction_stdv)).tolist()
 lower = (prediction_mean - (1.96 * prediction_stdv)).tolist()
 prediction_stdv = prediction_stdv.tolist()
+
+temperature_preds = [pred[0] for pred in prediction_mean]
+temperature_stds = [pred[0] for pred in prediction_stdv]
+
+metallicty_preds = [pred[1] for pred in prediction_mean]
+metallicity_stds = [pred[1] for pred in prediction_stdv]
 
 for idx in range(sample):
     print("Temperature")
@@ -81,3 +88,24 @@ for idx in range(sample):
         f" - Actual: {targets[idx][1]}"
     )
 
+target_x = [targ[0] for targ in targets]
+plt.errorbar(target_x, temperature_preds, yerr=temperature_stds,
+             fmt='o', ecolor='g', capthick=2, label='predictions')
+plt.plot(target_x, target_x, label='perfect prediction')
+plt.xlabel('True Temperature (keV)', fontweight='bold')
+plt.ylabel('Predicted Temperature (keV)', fontweight='bold')
+plt.legend()
+plt.savefig('temperature_residuals.png')
+plt.clf()
+
+target_x = [targ[1] for targ in targets]
+plt.errorbar(target_x, metallicty_preds, yerr=metallicity_stds,
+             fmt='o', ecolor='g', capthick=2, label='predictions')
+plt.plot(target_x, target_x, label='perfect prediction')
+plt.xlabel(r'True Metallicity (Z$_\odot$)', fontweight='bold')
+plt.ylabel(r'Predicted Temperature (Z$_\odot$)', fontweight='bold')
+plt.legend()
+plt.savefig('metallicity_residuals.png')
+
+
+pickle.dump(prediction_distribution, open('prediction_distribution.pkl', 'wb'))

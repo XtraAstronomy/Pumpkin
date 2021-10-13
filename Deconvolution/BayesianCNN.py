@@ -24,6 +24,8 @@ def run_experiment(model, loss, train_dataset, valid_dataset, test_dataset, num_
     _, rmse = model.evaluate(test_dataset, verbose=0)
     print(f"Test RMSE: {round(rmse, 3)}")
 
+    model.save_weights('PUMPKIN-I')
+
 # Define the prior weight distribution as Normal of mean=0 and stddev=1.
 # Note that, in this example, the we prior distribution is not trainable,
 # as we fix its parameters.
@@ -58,11 +60,9 @@ def posterior(kernel_size, bias_size, dtype=None):
     return posterior_model
 
 
-def create_probablistic_bnn_model(train_size,hidden_units, num_filters, filter_length):
+def create_probablistic_bnn_model(hidden_units, num_filters, filter_length):
     """
-
     Args:
-        train_size:
         hidden_units: Number of hidden nodes in each hidden layer (e.x. [128, 128] will make two layers with 128 nodes each)
         num_filters: Number of filters in the convolutional layer
         filter_length: Length of each individual filter
@@ -81,13 +81,13 @@ def create_probablistic_bnn_model(train_size,hidden_units, num_filters, filter_l
     features = keras.layers.Dropout(0.2)(features)
     for units in hidden_units:
         features = keras.layers.Dense(units, activation="relu")(features)
-    features = tfp.layers.DenseVariational(
+    '''features = tfp.layers.DenseVariational(
         units=100,
         make_prior_fn=prior,
         make_posterior_fn=posterior,
         kl_weight=1 / train_size,
         activation="sigmoid",
-    )(features)
+    )(features)'''
     # Create a probabilistic output (Normal distribution), and use the `Dense` layer
     # to produce the parameters of the distribution.
     # We set units=2 to learn both the mean and the variance of the Normal distribution.
