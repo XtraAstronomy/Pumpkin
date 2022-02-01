@@ -330,7 +330,6 @@ class Pixel:
 def read_in(image_fits,exposure_map = 'none'):
     #Collect Pixel Data
     hdu_list = fits.open(image_fits, memmap=True)
-    exposure_time = float(hdu_list[0].header["TSTOP"]) - float(hdu_list[0].header["TSTART"])
     counts = hdu_list[0].data
     y_len = counts.shape[0]
     x_len = counts.shape[1]
@@ -341,6 +340,7 @@ def read_in(image_fits,exposure_map = 'none'):
         hdu_list = fits.open(exposure_map, memmap=True)
         exposure = hdu_list[0].data
         hdu_list.close()
+        exposure_time = float(hdu_list[0].header["TSTOP"]) - float(hdu_list[0].header["TSTART"])
     #Currently Do not bother reading background information
     '''bkg_hdu = fits.open(bkg_image_fits, memmap=True)
     bkg_counts = bkg_hdu[0].data
@@ -371,7 +371,7 @@ def Nearest_Neighbors(pixel_list):
     print("Running Nearest Neighbor Algorithm")
     xvals = []
     yvals = []
-    num_neigh = 9
+    num_neigh = 50
     for pixel in pixel_list:
         xvals.append(pixel.pix_x)
         yvals.append(pixel.pix_y)
@@ -635,7 +635,7 @@ def converged_met(Bins,tol):
             True_count += 1
         else:
             pass
-    if True_count/len(Bins) > 0.9:
+    if True_count/len(Bins) > 0.8:
         return True
     else:
         return False
