@@ -1,0 +1,2 @@
+model_checkpoint_path: "RIM_apec_mini"
+all_model_checkpoint_paths: "RIM_apec_mini"

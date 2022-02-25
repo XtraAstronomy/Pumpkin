@@ -287,6 +287,9 @@ def FitXSPEC(spectrum_files,background_files,redshift,n_H,Temp_guess,grouping,sp
     reduced_chi_sq = f.rstat
     # Add to class instance
     region.add_fit_data(Temperature,Temp_min,Temp_max,Abundance,Ab_min,Ab_max,Norm,Norm_min,Norm_max,reduced_chi_sq,redshift)
+    file_to_write_total.write(spec_count, Temperature, Abundance, reigon.dens[1], region.press[1], region.entropy[1])
+    file_min.write(spec_count, Temp_min, Ab_min, reigon.dens[0], region.press[0], region.entropy[0])
+    file_max.write(spec_count, Temp_max, Ab_max, reigon.dens[2], region.press[2], region.entropy[2])
     reset(get_model())
     reset(get_source())
     clean()

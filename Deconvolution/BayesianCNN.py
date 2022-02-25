@@ -6,7 +6,7 @@ import tensorflow as tf
 import tensorflow.keras as keras
 import tensorflow_probability as tfp
 
-def run_experiment(model, loss, train_dataset, valid_dataset, test_dataset, num_epochs):
+def run_experiment(model, loss, train_dataset, valid_dataset, test_dataset, num_epochs, outputname):
     learning_rate = 0.001
     model.compile(
         optimizer=keras.optimizers.RMSprop(learning_rate=learning_rate),
@@ -24,7 +24,7 @@ def run_experiment(model, loss, train_dataset, valid_dataset, test_dataset, num_
     _, rmse = model.evaluate(test_dataset, verbose=0)
     print(f"Test RMSE: {round(rmse, 3)}")
 
-    model.save_weights('PUMPKIN-I')
+    model.save_weights(outputname)
 
 # Define the prior weight distribution as Normal of mean=0 and stddev=1.
 # Note that, in this example, the we prior distribution is not trainable,
@@ -81,13 +81,13 @@ def create_probablistic_bnn_model(hidden_units, num_filters, filter_length):
     features = keras.layers.Dropout(0.2)(features)
     for units in hidden_units:
         features = keras.layers.Dense(units, activation="relu")(features)
-    '''features = tfp.layers.DenseVariational(
-        units=100,
-        make_prior_fn=prior,
-        make_posterior_fn=posterior,
-        kl_weight=1 / train_size,
-        activation="sigmoid",
-    )(features)'''
+    #features = tfp.layers.DenseVariational(
+    #    units=100,
+    #    make_prior_fn=prior,
+    #    make_posterior_fn=posterior,
+        #kl_weight=1 / train_size,
+    #    activation="sigmoid",
+    #)(features)
     # Create a probabilistic output (Normal distribution), and use the `Dense` layer
     # to produce the parameters of the distribution.
     # We set units=2 to learn both the mean and the variance of the Normal distribution.

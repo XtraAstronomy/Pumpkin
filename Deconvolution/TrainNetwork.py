@@ -1,5 +1,5 @@
 """
-Train CNN
+Train CNN using the deconvolved spectra (i.e. true spectra)
 """
 
 import matplotlib.pyplot as plt
@@ -16,9 +16,13 @@ import tensorflow as tf
 # ----------- READ IN -----------------#
 # Read in Spectral Data
 spectra_data = pickle.load(open('/home/carterrhea/pCloudDrive/Research/Chandra-Response/RIM_data/spectra.pkl', 'rb'))
-spectra = [spec[1][0][1][35:550] for spec in spectra_data.items()]
+true_spectra = pickle.load(open('/home/carterrhea/pCloudDrive/Research/Chandra-Response/RIM_data/true_spectra.pkl', 'rb'))
+#print([spec for spec in spectra_data.items()][0])
+#spectra = [spec[1][0][1][35:550] for spec in spectra_data.items()]
 temperatures = [round(spec[1][3], 2) for spec in spectra_data.items()]
 abundances = [round(spec[1][4], 2) for spec in spectra_data.items()]
+spectra = [spec[1][1][35:550] for spec in true_spectra.items()]  # use True spectrum
+#print([spec[1][1] for spec in true_spectra.items()][0])
 # ---------- Train and Test Algorithm------------ #
 # Get number of spectra
 syn_num_pass = len(spectra)
@@ -42,16 +46,21 @@ TestSet = TestSet.reshape(TestSet.shape[0], TestSet.shape[1], 1)
 TestSetLabels = np.array((temperatures[valid_div:], abundances[valid_div:])).T
 test_dataset = tf.data.Dataset.from_tensor_slices((TestSet, TestSetLabels))
 
-BATCH_SIZE = 16
+BATCH_SIZE = 8
 
 train_dataset = train_dataset.batch(BATCH_SIZE)
 validation_dataset = validation_dataset.batch(BATCH_SIZE)
 test_dataset = test_dataset.batch(BATCH_SIZE)
 
 train_size = train_div
-num_epochs = 10
-prob_bnn_model = create_probablistic_bnn_model(train_size, hidden_units=[128, 128], num_filters=[4,16], filter_length=[5,3])
-run_experiment(prob_bnn_model, negative_loglikelihood, train_dataset, validation_dataset, test_dataset, num_epochs=num_epochs)
+num_epochs = 20
+# Train Algorithm
+prob_bnn_model = create_probablistic_bnn_model(hidden_units=[128, 256], num_filters=[4,16], filter_length=[5,3])
+run_experiment(prob_bnn_model, negative_loglikelihood, train_dataset, validation_dataset, test_dataset, num_epochs=num_epochs, outputname='PUMPKIN-I')
+
+
+
+# Obtain results on a sample
 sample = 50
 examples, targets = list(test_dataset.unbatch().shuffle(BATCH_SIZE * 10).batch(sample))[
     0
@@ -103,7 +112,7 @@ plt.errorbar(target_x, metallicty_preds, yerr=metallicity_stds,
              fmt='o', ecolor='g', capthick=2, label='predictions')
 plt.plot(target_x, target_x, label='perfect prediction')
 plt.xlabel(r'True Metallicity (Z$_\odot$)', fontweight='bold')
-plt.ylabel(r'Predicted Temperature (Z$_\odot$)', fontweight='bold')
+plt.ylabel(r'Predicted Metallicity (Z$_\odot$)', fontweight='bold')
 plt.legend()
 plt.savefig('metallicity_residuals.png')
 
