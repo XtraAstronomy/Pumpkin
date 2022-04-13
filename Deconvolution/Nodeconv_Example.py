@@ -33,8 +33,7 @@ spectrum_axis = [s1[0] for s1 in spectrum[35:550]]
 spectrum_counts = np.array([s1[1] for s1 in spectrum[35:550]])
 
 
-## Step 2: Apply RIM to deconvolve spectrum
-#TODO: Implement!
+
 
 ## Step 3: Apply probabilistic Bayesian Convolutional Neural Network to extract Posterior on parameters
 

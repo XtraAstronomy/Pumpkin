@@ -9,20 +9,36 @@ import os
 from scipy.stats import gaussian_kde
 from BayesianCNN import create_probablistic_bnn_model, run_experiment, negative_loglikelihood
 import tensorflow as tf
+from RIM_sequence_V1 import RIM
 # ------------ INPUTS -------------- #
 
 
 
 # ----------- READ IN -----------------#
-# Read in Spectral Data
+# Read in Spectral Data & Response matrices
+# TODO: UPDATE TO HAVE DECONVOLVED DATA!!!!
 spectra_data = pickle.load(open('/home/carterrhea/pCloudDrive/Research/Chandra-Response/RIM_data/spectra.pkl', 'rb'))
 true_spectra = pickle.load(open('/home/carterrhea/pCloudDrive/Research/Chandra-Response/RIM_data/true_spectra.pkl', 'rb'))
+responses_data = pickle.load(open('/home/carterrhea/pCloudDrive/Research/Chandra-Response/RIM_data/rmfs.pkl', 'rb'))
+# Pull out spectra
+min_ = 35
+max_ = 175
+num_ = 10000
 #print([spec for spec in spectra_data.items()][0])
 #spectra = [spec[1][0][1][35:550] for spec in spectra_data.items()]
 temperatures = [round(spec[1][3], 2) for spec in spectra_data.items()]
 abundances = [round(spec[1][4], 2) for spec in spectra_data.items()]
-spectra = [spec[1][1][35:550] for spec in true_spectra.items()]  # use True spectrum
-#print([spec[1][1] for spec in true_spectra.items()][0])
+spectra = [spec[1][1][min_:max_] for spec in true_spectra.items()]  # use True spectrum
+spectra_response = [data[1][1] for data in spectra_data.items()]
+responses = [responses_data[val][min_:max_,min_:max_] for val in spectra_response][:num_]
+# ---------- Deconvolve Spectra using RIM ------- #
+input_data = tf.data.Dataset.from_tensor_slices((spectra, responses))
+input_data = input_data.batch(1)  # Batch size 1
+RIM_model = RIM(rnn_units1=100, rnn_units2=100, input_size=140, dimensions=1, t_steps=10)
+RIM_model.load_weights('RIM-Model/RIM_apec_small')
+test = RIM_model(tf.data.Dataset.from_tensor_slices((spectra[0], responses[0])))
+print(RIM_model.summary())
+deconvolved_spectrum = RIM_model(input_data)
 # ---------- Train and Test Algorithm------------ #
 # Get number of spectra
 syn_num_pass = len(spectra)
