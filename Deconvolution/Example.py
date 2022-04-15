@@ -43,7 +43,7 @@ print(spectrum_counts)
 #input_data = [spectrum_counts, response]
 input_data = tf.data.Dataset.from_tensor_slices((spectrum_counts, response))
 input_data = input_data.batch(1)  # Batch size 1
-#TODO: Implement!
+
 RIM_model = RIM(rnn_units1=128, rnn_units2=128, input_size=140, dimensions=1, t_steps=1)
 RIM_model.built = True
 RIM_model.load_weights('weights_512nodes_20epochs/weights')
