@@ -78,7 +78,7 @@ def obsid_set(src_model_dict,bkg_model_dict,obsid,bkg_src, obs_count,redshift,nH
     bkg_model_dict[obsid] = xsapec('bkgApec'+str(obs_count))+get_model_component('abs1')*xsbremss('brem'+str(obs_count))
     set_bkg_model(obs_count,bkg_model_dict[obsid])
     #Change bkg model component values
-    et_model_component('bkgApec' + str(obs_count)).kT = 0.18
+    get_model_component('bkgApec' + str(obs_count)).kT = 0.18
     freeze(get_model_component('bkgApec'+str(obs_count)).kT)
     get_model_component('brem' + str(obs_count)).kT = 40.0
     freeze(get_model_component('brem' + str(obs_count)).kT)
@@ -239,6 +239,6 @@ def Fitting_Deprojected(base_directory,ObsIDs,file_name,num_files,redshift,n_H,T
     file_to_write.write('BinNumber r_in r_out temp norm dens \n')
     for row,row_err in enumerate(zip(onion[:], onion_errs[:])):
         #print(row, row_err)
-        
+
         file_to_write.write('%i %.2E %.2E %.2E %.2E %.2E \n'%(row[0], row[1], row[2], row[-3], row[-2], row[-1]))
     file_to_write.close()

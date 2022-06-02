@@ -41,10 +41,18 @@ described above.
 
   example: 4636/repro/
 
-To run the program please supply those items (and other relevant info) in an input file (see Inputs folder for examples)
+To run the program please supply those items (and other relevant info) in an input file (example.i)
 and execute the following command:
 
 `python Temperature_Profiles.py Inputs/example.i`
+
+You need to set the several paths and three key parameters for the fits:
+  1. The number of annuli
+  2. The redshift of the cluster
+  3. The column density of the cluster. You can use [this tool](https://heasarc.gsfc.nasa.gov/cgi-bin/Tools/w3nh/w3nh.pl)
+  to find the column density. I use the weighted average nH. Also, this value needs
+  to be in units of 10^{22} cm^{-2}. So if the website returns a weighted average value
+  of 5E+21 you should input 0.5 in the input file.
 
 Region files should be in the regions sub-directory. They should be labeled by name_count
 where count corresponds to their annulus number. For example, if we have two regions, ann_1 and ann_2,
@@ -90,6 +98,9 @@ This repository contains all the code required to recreate the Perseus cluster m
 7. Run "python Temperatures/Temperature_Maps.py Perseus.i"
  	- This will calculate the temperatures of each component in each region and create maps of each temperature
 
+
+## Spectral deconvolution using machine learning
+Coming soon :P 
 
 
 This is Pumpkin
