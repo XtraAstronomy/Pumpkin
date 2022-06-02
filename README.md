@@ -1,5 +1,68 @@
 # Pumpkin
-Code for Principal Component and Random Forest Classification to study Galaxy Cluster X-ray Emission
+Pumpkin was initially created to do the analysis found in [arxiv 2009.00643](https://arxiv.org/abs/2009.00643). However, we have since
+decided to expand Pumpkin to include general purpose fitting in order to make
+thermodynamic maps and line plots. We are currently working on updating the code
+and including several examples to make this processes more simple and quick! If you
+need help with this immediately, please send me an email at carter.rhea@umontreal.ca.
+
+
+In order to create thermodynamic maps of a cluster (say temperature and metallicity),
+we first need to bin a our image so that each bin will have an appropriate signal-to-noise
+so that we can trust our results. We also have to define the fitting and background
+functions we wish to use. Pumpkin currently contains an absorbed `apec` model for
+the cluster emission and a standard background model containing both local X-ray emission,
+background AGN, and diffuse background emission. However, Pumpkin can be easily modified
+to use different functions (Lines 64-92 in `Temperatures/Fits.py`). Before you
+can run the pipeline, you need to use the `chandra_download_obsid` command from `ciao`
+to download the ObsIDs of interest.
+
+There are two primary pipelines in Pumpkin: one to clean the data and another to
+fit the data.
+
+## Cleaning Pipeline
+The cleaning pipeline can be found in the `DataCleaning` directory and can be run using the following command (from the `DataCleaning` directory):
+```
+python DataCleaningPipeline.py input.i
+```
+* Be sure to have updated the input.i file!! *
+
+
+## Fitting Pipeline
+Create profile for galaxy cluster by fitting spectra.
+
+This program will results in:
+- Spectra for each region
+- Temperature, Abundance, Cooling Time, Pressure, and Density Plots
+
+
+In order to run this program you need the following:
+1. Reprocessed Chandra ObsIDs -- this can be created using the `DataCleaningPipeline`
+described above.
+
+  example: 4636/repro/
+
+To run the program please supply those items (and other relevant info) in an input file (see Inputs folder for examples)
+and execute the following command:
+
+`python Temperature_Profiles.py Inputs/example.i`
+
+Region files should be in the regions sub-directory. They should be labeled by name_count
+where count corresponds to their annulus number. For example, if we have two regions, ann_1 and ann_2,
+then ann_2 would be the outer annulus and ann_1 would be the inner annulus.
+
+What does the program do?
+
+- Create extracted region pi files for each ObsID in their reprocessed (repro) folders.
+- Fit normal and deprojected spectra in each annulus
+- Create text files and plots of thermodynamic variables (temperature, abundance, normalization, density, pressure, cooling time)
+
+
+### Basic Thermodynamic Map Creation (in progress)
+
+
+# Machine Learning Additions/Applications
+
+## Code for Principal Component and Random Forest Classification to study Galaxy Cluster X-ray Emission
 
 In order create the synthetic data the *ciao* software package is required. It can be found here: https://cxc.cfa.harvard.edu/ciao/
 

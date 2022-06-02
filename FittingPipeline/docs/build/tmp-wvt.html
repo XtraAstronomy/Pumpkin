@@ -1,0 +1,415 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>WVT Algorithm &mdash; Astronomy Tools 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Gaussian Gradient Filter" href="ggf.html" />
+    <link rel="prev" title="Binning routines" href="tmp-bins.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Astronomy Tools
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="temperatureMapPipeline.html">Temperature Map</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tmp-fits.html">Fitting routines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tmp-plots.html">Plotting routines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tmp-bins.html">Binning routines</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">WVT Algorithm</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bin-accretion-algorithm">Bin accretion algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main-algorithm">Main algorithm</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-TemperatureMapPipeline.WVT">WVT routines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ggf.html">Gaussian Gradient Filter</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Astronomy Tools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="temperatureMapPipeline.html">Temperature Map</a> &raquo;</li>
+        
+      <li>WVT Algorithm</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/tmp-wvt.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="wvt-algorithm">
+<span id="tmp-wvt"></span><h1>WVT Algorithm<a class="headerlink" href="#wvt-algorithm" title="Permalink to this headline">¶</a></h1>
+<p>This section will contain the pseudo-algorithm of my python code.</p>
+<p>Before we are able to begin our algorithm (WVT) in earnest, we must have a decent initial guess!</p>
+<p>Enter Bin Accretion</p>
+<div class="section" id="bin-accretion-algorithm">
+<h2>Bin accretion algorithm<a class="headerlink" href="#bin-accretion-algorithm" title="Permalink to this headline">¶</a></h2>
+<p><em>Pseudocode</em>
+.. code-block:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">While</span> <span class="n">Pixels</span> <span class="n">left</span> <span class="n">to</span> <span class="n">be</span> <span class="n">assigned</span>
+    <span class="n">While</span> <span class="n">Criteria</span> <span class="ow">not</span> <span class="nb">all</span> <span class="n">met</span>
+        <span class="n">Calculate</span> <span class="n">pixel</span> <span class="n">closest</span> <span class="n">to</span> <span class="nb">bin</span> <span class="n">centroid</span><span class="p">;</span>
+        <span class="n">Calculate</span> <span class="n">Adjacency</span><span class="p">;</span>
+        <span class="n">Calculate</span> <span class="n">Roundness</span><span class="p">;</span>
+        <span class="n">Calculate</span> <span class="n">Potential</span> <span class="n">Signal</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">Noise</span><span class="p">;</span>
+        <span class="k">if</span> <span class="n">Criteria</span> <span class="nb">all</span> <span class="n">met</span>
+            <span class="n">Add</span> <span class="n">pixel</span> <span class="n">to</span> <span class="n">Bin</span><span class="p">;</span>
+            <span class="n">Start</span> <span class="n">new</span> <span class="nb">bin</span><span class="p">;</span>
+            <span class="k">elif</span> <span class="n">Signal</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">Noise</span> <span class="n">too</span> <span class="n">low</span>
+                <span class="n">Mark</span> <span class="n">pixels</span> <span class="n">unassigned</span><span class="p">;</span>
+<span class="n">Reassign</span> <span class="nb">all</span> <span class="n">unassigned</span> <span class="n">pixels</span> <span class="n">to</span> <span class="n">nearest</span> <span class="nb">bin</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="main-algorithm">
+<h2>Main algorithm<a class="headerlink" href="#main-algorithm" title="Permalink to this headline">¶</a></h2>
+<p>With that out of the way we can discuss how I actually calculated the three different criteria: Adjacency, Roundness, Potential Signal-to-Noise.</p>
+<ol class="arabic">
+<li><p>Adjaceny: This one is simple: just check if the pixels are neighbors!</p></li>
+<li><p>Roundness: Ok so now we finally need to calculate some stuff… More explicity R_{equiv} and R_{max}. R_{max} is the maximum distance from the centroid for ALL pixels in bin. R_{equiv} is a wonderfully horrendous quantity which is “the radius of a disk around the bin”. Lets do a quick little derivation…</p>
+<blockquote>
+<div><p>Area_{circle} = pi r_{circle}^2 == npifrac{d_{pix}}{2}^^2 = Area_{bin}</p>
+</div></blockquote>
+</li>
+</ol>
+<dl class="simple">
+<dt>Solving for $r_{circle}$ we get,</dt><dd><p>r_{circle} = sqrt{frac{n}{pi}} d</p>
+</dd>
+</dl>
+<p>And now we can calculate the roundness parameter which describes the compactness of the bin:</p>
+<blockquote>
+<div><p>Roundness = frac{R_{max}}{R_{equiv}} - 1</p>
+</div></blockquote>
+<p>We generally shoot for a value of $Roundness = 0.3$.</p>
+<ol class="arabic simple" start="3">
+<li><p>Potential Signal-to-Noise: We add the pixel to the bin and then recompute the Signal-to-Noise. This needs to be less than the target Signal-to-Noise.</p></li>
+</ol>
+<p>And now to the main event (which is not very much coding wise compared to bin accretion).</p>
+<p><em>Pseudocode</em>
+.. code-block:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">initialization</span> <span class="o">--&gt;</span> <span class="n">read</span> <span class="ow">in</span> <span class="n">Bin</span> <span class="n">Accretion</span> <span class="n">Data</span><span class="p">;</span>
+<span class="n">While</span> <span class="n">Bins</span> <span class="ow">not</span> <span class="n">converged</span>
+    <span class="n">For</span> <span class="nb">bin</span> <span class="ow">in</span> <span class="n">Bins</span>
+        <span class="n">Recalculate</span> <span class="n">Signal</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">Noise</span><span class="p">;</span>
+        <span class="n">Calculate</span> <span class="n">Area</span><span class="p">;</span>
+        <span class="n">Calculate</span> <span class="n">Centroid</span><span class="p">;</span>
+        <span class="n">Calculate</span> <span class="n">Scale</span> <span class="n">Length</span><span class="p">;</span>
+    <span class="n">Reassign</span> <span class="n">Pixel</span> <span class="n">to</span> <span class="n">Closest</span> <span class="n">Bin</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>And again we need to define two properties: Area and Scale Length.</p>
+<ol class="arabic">
+<li><p>Area: Area of bin. This is basically just the area of the pixels in the bin…</p>
+<blockquote>
+<div><p>A_{bin} = (Pixel_Length)^2*N_{pixels}</p>
+</div></blockquote>
+</li>
+<li><p>Scale Length: This scale length is the KEY to the WEIGHTED part of WVT.</p>
+<blockquote>
+<div><p>sqrt{frac{A_{bin}}{pi}frac{S/N}{(S/N)_{target}}}</p>
+</div></blockquote>
+</li>
+</ol>
+</div>
+</div>
+<div class="section" id="module-TemperatureMapPipeline.WVT">
+<span id="wvt-routines"></span><h1>WVT routines<a class="headerlink" href="#module-TemperatureMapPipeline.WVT" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="TemperatureMapPipeline.WVT.Nearest_Neighbors">
+<code class="sig-prename descclassname">TemperatureMapPipeline.WVT.</code><code class="sig-name descname">Nearest_Neighbors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pixel_list</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TemperatureMapPipeline.WVT.Nearest_Neighbors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate Adjaceny list for each pixel (up to 9 pixels)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pixel_list</strong> (<em>list</em>) – List of pixel instances</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Adds list of nearest neighbors to each pixel instance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="TemperatureMapPipeline.WVT.closest_node">
+<code class="sig-prename descclassname">TemperatureMapPipeline.WVT.</code><code class="sig-name descname">closest_node</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Bin_current</span></em>, <em class="sig-param"><span class="n">unassigned_pixels</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TemperatureMapPipeline.WVT.closest_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the closed pixel in a bin for a pixel that has not yet been assigned to a bin</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Bin_current</strong> (<em>bin</em>) – Current bin</p></li>
+<li><p><strong>unassigned_pixels</strong> (<em>list</em>) – List of unnassigned pixels</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="TemperatureMapPipeline.WVT.dist">
+<code class="sig-prename descclassname">TemperatureMapPipeline.WVT.</code><code class="sig-name descname">dist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p1x</span></em>, <em class="sig-param"><span class="n">p1y</span></em>, <em class="sig-param"><span class="n">p2x</span></em>, <em class="sig-param"><span class="n">p2y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TemperatureMapPipeline.WVT.dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate distance between pixels</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p1x</strong> (<em>float</em>) – X-coordinate of pixel 1</p></li>
+<li><p><strong>p1y</strong> (<em>float</em>) – Y-coordinate of pixel 1</p></li>
+<li><p><strong>p2x</strong> (<em>float</em>) – X-coordinate of pixel 2</p></li>
+<li><p><strong>p2y</strong> (<em>float</em>) – Y-coordinate of pixel 2</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Euclidean distance between pixel 1 and pixel 2</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="TemperatureMapPipeline.WVT.plot_Bins">
+<code class="sig-prename descclassname">TemperatureMapPipeline.WVT.</code><code class="sig-name descname">plot_Bins</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Bins</span></em>, <em class="sig-param"><span class="n">x_min</span></em>, <em class="sig-param"><span class="n">x_max</span></em>, <em class="sig-param"><span class="n">y_min</span></em>, <em class="sig-param"><span class="n">y_max</span></em>, <em class="sig-param"><span class="n">stn_target</span></em>, <em class="sig-param"><span class="n">file_dir</span></em>, <em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TemperatureMapPipeline.WVT.plot_Bins" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the WVT bins in the image. The bins will be randomly colored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Bin</strong> (<em>list</em>) – List of bin objects</p></li>
+<li><p><strong>x_min</strong> (<em>float</em>) – Minimum x-value of pixel</p></li>
+<li><p><strong>x_max</strong> (<em>float</em>) – Maximum x-value of pixel</p></li>
+<li><p><strong>y_min</strong> (<em>float</em>) – Minimum y-value of pixel</p></li>
+<li><p><strong>y_max</strong> (<em>float</em>) – Maximum y-value of pixel</p></li>
+<li><p><strong>stn_target</strong> – Target signal-to-noise value</p></li>
+<li><p><strong>file_dir</strong> (<em>str</em>) – Full path to location of new image</p></li>
+<li><p><strong>filename</strong> (<em>str</em>) – Name of file to be made</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Creates Histogram of SNRs and a PNG of the WVT map</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="TemperatureMapPipeline.WVT.plot_Bins_SN">
+<code class="sig-prename descclassname">TemperatureMapPipeline.WVT.</code><code class="sig-name descname">plot_Bins_SN</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Bins</span></em>, <em class="sig-param"><span class="n">x_min</span></em>, <em class="sig-param"><span class="n">x_max</span></em>, <em class="sig-param"><span class="n">y_min</span></em>, <em class="sig-param"><span class="n">y_max</span></em>, <em class="sig-param"><span class="n">file_dir</span></em>, <em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TemperatureMapPipeline.WVT.plot_Bins_SN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the Normalized Signal to Noise Map</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Bin</strong> (<em>list</em>) – List of bin objects</p></li>
+<li><p><strong>x_min</strong> (<em>float</em>) – Minimum x-value of pixel</p></li>
+<li><p><strong>x_max</strong> (<em>float</em>) – Maximum x-value of pixel</p></li>
+<li><p><strong>y_min</strong> (<em>float</em>) – Minimum y-value of pixel</p></li>
+<li><p><strong>y_max</strong> (<em>float</em>) – Maximum y-value of pixel</p></li>
+<li><p><strong>stn_target</strong> – Target signal-to-noise value</p></li>
+<li><p><strong>file_dir</strong> (<em>str</em>) – Full path to location of new image</p></li>
+<li><p><strong>filename</strong> (<em>str</em>) – Name of file to be made</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Creates Normalized Signal to Noise Map PNG</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="TemperatureMapPipeline.WVT.read_in">
+<code class="sig-prename descclassname">TemperatureMapPipeline.WVT.</code><code class="sig-name descname">read_in</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image_fits</span></em>, <em class="sig-param"><span class="n">exposure_map</span><span class="o">=</span><span class="default_value">'none'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TemperatureMapPipeline.WVT.read_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read in region image fits and calculate the signal-to-noise of each pixel.  The signal to noise is the sqrt(counts)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image_fits</strong> (<em>str</em>) – Path to fits image file</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Kwargs:</dt><dd><p>exposure_map (str): Path to exposure map</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of pixel instances</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ggf.html" class="btn btn-neutral float-right" title="Gaussian Gradient Filter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="tmp-bins.html" class="btn btn-neutral float-left" title="Binning routines" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Carter Rhea
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -62,6 +62,7 @@ def isFloat(string):
 
 #------------------------------------------------------------------------------#
 #Dynamically set source for OBSID
+# HERE WE DEFINE THE MODELS FOR THE FOREGROUND AND BACKGROUND
 def obsid_set(src_model_dict,bkg_model_dict,obsid, bkg_spec,obs_count,redshift,nH_val,Temp_guess):
     load_pha(obs_count,obsid) #Read in
     if obs_count == 1:
@@ -287,6 +288,9 @@ def FitXSPEC(spectrum_files,background_files,redshift,n_H,Temp_guess,grouping,sp
     reduced_chi_sq = f.rstat
     # Add to class instance
     region.add_fit_data(Temperature,Temp_min,Temp_max,Abundance,Ab_min,Ab_max,Norm,Norm_min,Norm_max,reduced_chi_sq,redshift)
+    file_to_write_total.write(spec_count, Temperature, Abundance, reigon.dens[1], region.press[1], region.entropy[1])
+    file_min.write(spec_count, Temp_min, Ab_min, reigon.dens[0], region.press[0], region.entropy[0])
+    file_max.write(spec_count, Temp_max, Ab_max, reigon.dens[2], region.press[2], region.entropy[2])
     reset(get_model())
     reset(get_source())
     clean()
