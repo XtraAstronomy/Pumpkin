@@ -62,6 +62,7 @@ def isFloat(string):
 
 #------------------------------------------------------------------------------#
 #Dynamically set source for OBSID
+# HERE WE DEFINE THE MODELS FOR THE FOREGROUND AND BACKGROUND
 def obsid_set(src_model_dict,bkg_model_dict,obsid, bkg_spec,obs_count,redshift,nH_val,Temp_guess):
     load_pha(obs_count,obsid) #Read in
     if obs_count == 1:

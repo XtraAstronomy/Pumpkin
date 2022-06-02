@@ -1,0 +1,160 @@
+'''
+Create window with all ccds
+'''
+
+import os
+import easygui as gui
+from pycrates import *
+from pychips.all import *
+from shutil import copyfile
+from ciao_contrib.smooth import *
+from ciao_contrib.runtool import *
+
+
+def max_counts(image):
+    dmstat.punlearn()
+    dmstat.infile = image
+    dmstat.centroid = True
+    dmstat()
+    return int(dmstat.out_max)
+
+def max_coord(image,coord):
+    dmstat.punlearn()
+    dmstat.infile = image+'[cols '+coord+']'
+    dmstat()
+    return float(dmstat.out_max)
+
+def min_coord(image,coord):
+    dmstat.punlearn()
+    dmstat.infile = image+'[cols '+coord+']'
+    dmstat()
+    return float(dmstat.out_min)
+
+def display_ccds(ccd_list):
+    add_window(32,32)
+    split(2,int(len(ccd_list)/2)+1)
+    ccd_count = 1
+    full_ccd_list = ['ccd'+i for i in ccd_list]
+    for ccd in full_ccd_list:
+        max_cts = max_counts(ccd+'.img')
+        cr = read_file(ccd+".img")
+        current_plot("plot"+str(ccd_count))
+        img = copy_piximgvals(cr)
+        set_piximgvals(cr, gsmooth(img, 3))
+        add_image(cr, ["depth", 50, "wcs", "logical"])
+        set_image(["threshold", [0,max_cts/25]])
+        set_image(["colormap", "heat"])
+        x_min = min_coord(ccd+".fits",'x'); x_max = max_coord(ccd+".fits",'x')
+        y_min = min_coord(ccd+".fits",'y'); y_max = max_coord(ccd+".fits",'y')
+        limits(x_min,x_max,y_min,y_max)
+        add_label(x_min, y_min, ccd, ["size", 18])
+        set_label(["color", "white"])
+        ccd_count += 1
+        hide_axis()
+    hide_axis()
+    outfile_name = "ccds.png"
+    print_window(outfile_name,['clobber','yes'])
+    return None
+
+def display_entire(home_dir,OBSID,repro_evt):
+    os.chdir(home_dir+'/'+OBSID+'/repro')
+    point_srcs = True
+    repro_img = repro_evt.split('.')[0]+'.img'
+    dmcopy.punlearn()
+    dmcopy.infile = repro_evt
+    dmcopy.outfile = repro_img
+    dmcopy.option = 'image'
+    dmcopy.clobber = True
+    dmcopy()
+    add_window(32,32)
+    max_cts = max_counts(repro_img)
+    cr = read_file(repro_img)
+    img = copy_piximgvals(cr)
+    set_piximgvals(cr, gsmooth(img, 3))
+    add_image(cr, ["depth", 50, "wcs", "logical"])
+    set_image(["threshold", [0,max_cts/5]])
+    set_image(["colormap", "heat"])
+    x_min = min_coord(repro_evt,'x'); x_max = max_coord(repro_evt,'x')
+    y_min = min_coord(repro_evt,'y'); y_max = max_coord(repro_evt,'y')
+    limits(x_min,x_max,y_min,y_max)
+    msg = "Please pick the extent of the diffuse emission..."
+    gui.ccbox(msg)
+    coords = get_pick()
+    msg = "Please pick the center and edge of background region..."
+    gui.ccbox(msg)
+    bkg_coord = get_pick()
+    add_point(bkg_coord[0], bkg_coord[1], ["style", "cross", "color", "blue"])
+    bkg_edge = get_pick()
+    add_point(bkg_edge[0], bkg_edge[1], ["style", "cross", "color", "blue"])
+    bkg_radius = np.sqrt((float(bkg_coord[0])-float(bkg_edge[0]))**2+(float(bkg_coord[1])-float(bkg_edge[1]))**2)
+    bkg_file = open('bkg.reg','w+')
+    bkg_file.write("# Region file format: DS9 version 4.1 \n")
+    bkg_file.write("physical \n")
+    bkg_file.write('circle(%s,%s,%f) \n'%(bkg_coord[0][0],bkg_coord[1][0],bkg_radius))
+
+    ptsrc_file = open('pt_srcs.reg','w+')
+    ptsrc_file.write("# Region file format: DS9 version 4.1 \n")
+    ptsrc_file.write("physical \n")
+    while point_srcs == True:
+        msg = "Are there any point sources contaminating the diffuse emission?"
+        point_srcs = gui.ynbox(msg)
+        if point_srcs == True:
+            msg = "Please pick the point source and then the extent of the source after pressing continue..."
+            gui.ccbox(msg)
+            pt_src_coord = get_pick()
+            add_point(pt_src_coord[0], pt_src_coord[1], ["style", "cross", "color", "green"])
+            pt_src_edge = get_pick()
+            add_point(pt_src_edge[0], pt_src_edge[1], ["style", "cross", "color", "green"])
+            radius = np.sqrt((float(pt_src_coord[0])-float(pt_src_edge[0]))**2+(float(pt_src_coord[1])-float(pt_src_edge[1]))**2)
+            ptsrc_file.write('circle(%s,%s,%f) \n'%(pt_src_coord[0][0],pt_src_coord[1][0],radius))
+    if sum(1 for line in open('pt_srcs.reg')) < 3:
+        ptsrc_file.write('annulus(0,0,0,0)') #Just so that there is something in the file
+    ptsrc_file.close()
+    copyfile('pt_srcs.reg',home_dir+'/'+OBSID+'/Background/pt_srcs.reg')
+    return coords[0][0],coords[1][0]
+
+
+def display_merge(merged_dir,merged_evt):
+    os.chdir(merged_dir)
+    point_srcs = True
+    merged_img = merged_evt.split('.')[0]+'.img'
+    dmcopy.punlearn()
+    dmcopy.infile = merged_evt
+    dmcopy.outfile = merged_img
+    dmcopy.option = 'image'
+    dmcopy.clobber = True
+    #dmcopy()
+    add_window(32,32)
+    max_cts = max_counts(merged_img)
+    cr = read_file(merged_img)
+    img = copy_piximgvals(cr)
+    set_piximgvals(cr, gsmooth(img, 3))
+    add_image(cr, ["depth", 50, "wcs", "logical"])
+    set_image(["threshold", [0,max_cts/5]])
+    set_image(["colormap", "heat"])
+    x_min = min_coord(merged_evt,'x'); x_max = max_coord(merged_evt,'x')
+    y_min = min_coord(merged_evt,'y'); y_max = max_coord(merged_evt,'y')
+    limits(x_min,x_max,y_min,y_max)
+    msg = "Please pick the extent of the diffuse emission..."
+    gui.ccbox(msg)
+    coords = get_pick()
+    add_point(coords[0], coords[1], ["style", "cross", "color", "red"])
+    ptsrc_file = open('pt_srcs.reg','w+')
+    ptsrc_file.write("# Region file format: DS9 version 4.1 \n")
+    ptsrc_file.write("physical \n")
+    while point_srcs == True:
+        msg = "Are there any point sources contaminating the diffuse emission?"
+        point_srcs = gui.ynbox(msg)
+        if point_srcs == True:
+            msg = "Please pick the point source and then the extent of the source after pressing continue..."
+            gui.ccbox(msg)
+            pt_src_coord = get_pick()
+            add_point(pt_src_coord[0], pt_src_coord[1], ["style", "cross", "color", "green"])
+            pt_src_edge = get_pick()
+            add_point(pt_src_edge[0], pt_src_edge[1], ["style", "cross", "color", "green"])
+            radius = np.sqrt((float(pt_src_coord[0])-float(pt_src_edge[0]))**2+(float(pt_src_coord[1])-float(pt_src_edge[1]))**2)
+            ptsrc_file.write('annulus(%s,%s,0.0,%f) \n'%(pt_src_coord[0][0],pt_src_coord[1][0],radius))
+    if sum(1 for line in open('pt_srcs.reg')) < 3:
+        ptsrc_file.write('annulus(0,0,0,0)') #Just so that there is something in the file
+    ptsrc_file.close()
+    return coords[0][0],coords[1][0]
