@@ -1,0 +1,399 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Binning routines &mdash; Astronomy Tools 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Gaussian Gradient Filter" href="ggf.html" />
+    <link rel="prev" title="Plotting routines" href="tmp-plots.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Astronomy Tools
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="temperatureMapPipeline.html">Temperature Map</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tmp-fits.html">Fitting routines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tmp-plots.html">Plotting routines</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Binning routines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ggf.html">Gaussian Gradient Filter</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Astronomy Tools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="temperatureMapPipeline.html">Temperature Map</a> &raquo;</li>
+        
+      <li>Binning routines</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/tmp-bins.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-TemperatureMapPipeline.binned_spectra">
+<span id="binning-routines"></span><span id="tmp-bins"></span><h1>Binning routines<a class="headerlink" href="#module-TemperatureMapPipeline.binned_spectra" title="Permalink to this headline">¶</a></h1>
+<p>Goal:
+Create binned spectra from Chandra data given the WVT map of the pixels</p>
+<dl class="simple">
+<dt>OUTPUTS:</dt><dd><ul class="simple">
+<li><p>A combined spectra for each bin as designated by the WVT.</p></li>
+<li><p>This is to be used for spectral fitting (we’ll that’s why I made this program)</p></li>
+<li><p>File put in /PathToChandraData/OBSID/repro/binned</p></li>
+</ul>
+</dd>
+<dt>Additional Notes:</dt><dd><p>As mentioned, the program was designed to generate combinned-binned-spectra
+so that I could generate temperature maps…
+The program can easily be canabilized for other uses or specifications</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt id="TemperatureMapPipeline.binned_spectra.coord_trans">
+<code class="sig-prename descclassname">TemperatureMapPipeline.binned_spectra.</code><code class="sig-name descname">coord_trans</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pixel_x</span></em>, <em class="sig-param"><span class="n">pixel_y</span></em>, <em class="sig-param"><span class="n">file_to_split</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TemperatureMapPipeline.binned_spectra.coord_trans" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate image (logical) coordinates into physical (sky) coordinates</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pixel_x</strong> (<em>float</em>) – x coordinate in image coordinates</p></li>
+<li><p><strong>pixel_y</strong> (<em>float</em>) – y coordinate in image coordinates</p></li>
+<li><p><strong>file_to_split</strong> (<em>str</em>) – Name of event file</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>x coordinate in physical coordinates
+y_center (float): y coordinate in physical coordinates
+ra (float): RA in degrees
+dec (float): DEC in degrees</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>x_center (float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="TemperatureMapPipeline.binned_spectra.create_evt">
+<code class="sig-prename descclassname">TemperatureMapPipeline.binned_spectra.</code><code class="sig-name descname">create_evt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_to_split</span></em>, <em class="sig-param"><span class="n">bin_number</span></em>, <em class="sig-param"><span class="n">output_dir</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TemperatureMapPipeline.binned_spectra.create_evt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create temporary event file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_to_split</strong> (<em>str</em>) – Name of file to be split</p></li>
+<li><p><strong>bin_number</strong> (<em>int</em>) – Relative number of the bin wrt WVT numbering system</p></li>
+<li><p><strong>output_dir</strong> (<em>str</em>) – Path to output directory</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A copy of the temporary event file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="TemperatureMapPipeline.binned_spectra.create_reg">
+<code class="sig-prename descclassname">TemperatureMapPipeline.binned_spectra.</code><code class="sig-name descname">create_reg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">output_dir</span></em>, <em class="sig-param"><span class="n">regions</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TemperatureMapPipeline.binned_spectra.create_reg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create temporary region file in ds9 format</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_dir</strong> (<em>str</em>) – Output directory</p></li>
+<li><p><strong>reigons</strong> (<em>str</em>) – List of regions to add</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="TemperatureMapPipeline.binned_spectra.create_reg_comb">
+<code class="sig-prename descclassname">TemperatureMapPipeline.binned_spectra.</code><code class="sig-name descname">create_reg_comb</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pix_in_bin</span></em>, <em class="sig-param"><span class="n">file_to_split</span></em>, <em class="sig-param"><span class="n">bin_number</span></em>, <em class="sig-param"><span class="n">output_dir</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TemperatureMapPipeline.binned_spectra.create_reg_comb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to concatenate pixels in a bin together in order to reduce calculation time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pix_in_bin</strong> (<em>int</em>) – List of pixels in bin</p></li>
+<li><p><strong>file_to_split</strong> (<em>str</em>) – Name of event file</p></li>
+<li><p><strong>bin_number</strong> (<em>int</em>) – Relative number of the bin wrt WVT numbering system</p></li>
+<li><p><strong>output_dir</strong> (<em>str</em>) – Path to output directory</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Temporary ds9 file with concatenated pixels in bin that will be used to extract spectrum rapidly</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="TemperatureMapPipeline.binned_spectra.create_spectra">
+<code class="sig-prename descclassname">TemperatureMapPipeline.binned_spectra.</code><code class="sig-name descname">create_spectra</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">base_directory</span></em>, <em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">OBSIDS</span></em>, <em class="sig-param"><span class="n">source_file</span></em>, <em class="sig-param"><span class="n">output_dir</span></em>, <em class="sig-param"><span class="n">wvt_output</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TemperatureMapPipeline.binned_spectra.create_spectra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper function to create spectra for each bin in the WVT map</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base_directory</strong> (<em>str</em>) – Directory containing Chandra data</p></li>
+<li><p><strong>filename</strong> (<em>str</em>) – Name of file to read in WVT bin data</p></li>
+<li><p><strong>dir</strong> (<em>str</em>) – Directory for Chandra OBSID</p></li>
+<li><p><strong>file_to_split</strong> (<em>str</em>) – Name of file to split in repro directory</p></li>
+<li><p><strong>output_dir</strong> (<em>str</em>) – Output path for binned files</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Individual spectrum files (.pi) for source and background in each WVT bin</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is parallelized to run on 4 cores in order to speed up calculation time</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="TemperatureMapPipeline.binned_spectra.source_fits">
+<code class="sig-prename descclassname">TemperatureMapPipeline.binned_spectra.</code><code class="sig-name descname">source_fits</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filenames</span></em>, <em class="sig-param"><span class="n">source_file</span></em>, <em class="sig-param"><span class="n">obsid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TemperatureMapPipeline.binned_spectra.source_fits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create fits and image file for primary source region in reprocessed Directory
+Also create blanksky file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filenames</strong> (<em>str</em>) – dictionary containing evt2 file</p></li>
+<li><p><strong>source_file</strong> (<em>str</em>) – source region name without extension</p></li>
+<li><p><strong>obsid</strong> (<em>str</em>) – Chandra Observation ID</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Creates image file and blanksky file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="TemperatureMapPipeline.binned_spectra.spec_loop">
+<code class="sig-prename descclassname">TemperatureMapPipeline.binned_spectra.</code><code class="sig-name descname">spec_loop</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obsid</span></em>, <em class="sig-param"><span class="n">filenames</span></em>, <em class="sig-param"><span class="n">file_to_split</span></em>, <em class="sig-param"><span class="n">output_file</span></em>, <em class="sig-param"><span class="n">output_dir</span></em>, <em class="sig-param"><span class="n">directory_repro</span></em>, <em class="sig-param"><span class="n">bin_i</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TemperatureMapPipeline.binned_spectra.spec_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parallelized loop for creating spectra for bins</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="TemperatureMapPipeline.binned_spectra.specextract_run">
+<code class="sig-prename descclassname">TemperatureMapPipeline.binned_spectra.</code><code class="sig-name descname">specextract_run</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obsid</span></em>, <em class="sig-param"><span class="n">filenames</span></em>, <em class="sig-param"><span class="n">file_to_convert</span></em>, <em class="sig-param"><span class="n">outfile_from_convert</span></em>, <em class="sig-param"><span class="n">output_dir</span></em>, <em class="sig-param"><span class="n">bin_number</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TemperatureMapPipeline.binned_spectra.specextract_run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute specectract command with designated parameters. Grouping is set to 1 count per bin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obsid</strong> (<em>str</em>) – ObsID</p></li>
+<li><p><strong>filenames</strong> (<em>str</em>) – List of relavent files for given ObsID – contains badpixel file, evt1, evt2, …</p></li>
+<li><p><strong>file_to_convert</strong> (<em>str</em>) – Initial Level 2 file</p></li>
+<li><p><strong>outfile_from_convert</strong> (<em>str</em>) – Name of extracted spectrum</p></li>
+<li><p><strong>output_dir</strong> (<em>str</em>) – Directory for extracted spectrum</p></li>
+<li><p><strong>bin_num</strong> (<em>int</em>) – Relative number of the bin wrt WVT numbering system</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Creates extracted spectrum from WVT bin region</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="TemperatureMapPipeline.binned_spectra.split_fits">
+<code class="sig-prename descclassname">TemperatureMapPipeline.binned_spectra.</code><code class="sig-name descname">split_fits</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obsid</span></em>, <em class="sig-param"><span class="n">filenames</span></em>, <em class="sig-param"><span class="n">file_to_split</span></em>, <em class="sig-param"><span class="n">output_file</span></em>, <em class="sig-param"><span class="n">output_dir</span></em>, <em class="sig-param"><span class="n">pix_in_bin_num</span></em>, <em class="sig-param"><span class="n">bin_number</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TemperatureMapPipeline.binned_spectra.split_fits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create spectra from initial bin regions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obsid</strong> (<em>str</em>) – Current ObsID</p></li>
+<li><p><strong>filenames</strong> (<em>str</em>) – List of files necessary for specextract</p></li>
+<li><p><strong>file_to_split</strong> (<em>str</em>) – Fits file in string format</p></li>
+<li><p><strong>output_file</strong> (<em>str</em>) – Directory for output</p></li>
+<li><p><strong>output_dir</strong> (<em>str</em>) – Pha outroot in string format</p></li>
+<li><p><strong>pix_in_bin_num</strong> (<em>int</em>) – pixel number relative to bin (0-max(bin.pixels))</p></li>
+<li><p><strong>bin_number</strong> (<em>int</em>) – Relative number of the bin wrt WVT numbering system</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ggf.html" class="btn btn-neutral float-right" title="Gaussian Gradient Filter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="tmp-plots.html" class="btn btn-neutral float-left" title="Plotting routines" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Carter Rhea
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

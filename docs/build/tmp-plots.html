@@ -1,0 +1,276 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Plotting routines &mdash; Astronomy Tools 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Binning routines" href="tmp-bins.html" />
+    <link rel="prev" title="Fitting routines" href="tmp-fits.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Astronomy Tools
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="temperatureMapPipeline.html">Temperature Map</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tmp-fits.html">Fitting routines</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Plotting routines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tmp-bins.html">Binning routines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tmp-wvt.html">WVT Algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tmp-wvt.html#wvt-routines">WVT routines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ggf.html">Gaussian Gradient Filter</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Astronomy Tools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="temperatureMapPipeline.html">Temperature Map</a> &raquo;</li>
+        
+      <li>Plotting routines</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/tmp-plots.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-TemperatureMapPipeline.Plots">
+<span id="plotting-routines"></span><span id="tmp-plots"></span><h1>Plotting routines<a class="headerlink" href="#module-TemperatureMapPipeline.Plots" title="Permalink to this headline">¶</a></h1>
+<p>This program will plot the final temperature map using the temperatures calculated from sherpa and the binnings from WVT</p>
+<dl class="py class">
+<dt id="TemperatureMapPipeline.Plots.Bin">
+<em class="property">class </em><code class="sig-prename descclassname">TemperatureMapPipeline.Plots.</code><code class="sig-name descname">Bin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">number</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TemperatureMapPipeline.Plots.Bin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class which contains bin information: bin number, pixels in bin, temperature, reduced chi statistic, and abundance.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="TemperatureMapPipeline.Plots.plot_Ab">
+<code class="sig-prename descclassname">TemperatureMapPipeline.Plots.</code><code class="sig-name descname">plot_Ab</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bin_file</span></em>, <em class="sig-param"><span class="n">temp_file</span></em>, <em class="sig-param"><span class="n">file_dir</span></em>, <em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">color_map</span></em>, <em class="sig-param"><span class="n">stn</span></em>, <em class="sig-param"><span class="n">wcs_image</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TemperatureMapPipeline.Plots.plot_Ab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the Abundance from Fits and create png and fits image with the following ending:
+file_dir+’/’+filename+”_”+str(stn)+”_Met.png”</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bin_file</strong> (<em>str</em>) – WVT bin data file</p></li>
+<li><p><strong>temp_file</strong> (<em>str</em>) – Temperature file containing fit information</p></li>
+<li><p><strong>file_dir</strong> (<em>str</em>) – Full path to location of new image (and fits)</p></li>
+<li><p><strong>filename</strong> (<em>str</em>) – Name of new output file</p></li>
+<li><p><strong>color_map</strong> (<em>str</em>) – Matplotlib Colormap (default = Viridis)</p></li>
+<li><p><strong>stn</strong> (<em>int</em>) – Target Signal-to-Noise of WVT bins</p></li>
+<li><p><strong>wcs_image</strong> (<em>str</em>) – Path to initial image for WCS information (not used for anything else)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>PNG and FITS image of fitted abundances</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="TemperatureMapPipeline.Plots.plot_Bins">
+<code class="sig-prename descclassname">TemperatureMapPipeline.Plots.</code><code class="sig-name descname">plot_Bins</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bin_file</span></em>, <em class="sig-param"><span class="n">temp_file</span></em>, <em class="sig-param"><span class="n">file_dir</span></em>, <em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">color_map</span></em>, <em class="sig-param"><span class="n">stn</span></em>, <em class="sig-param"><span class="n">wcs_image</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TemperatureMapPipeline.Plots.plot_Bins" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the Temperatures from Fits and create png and fits image with the following ending:
+file_dir+’/’+filename+”_”+str(stn)+”_Met.png”</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bin_file</strong> (<em>str</em>) – WVT bin data file</p></li>
+<li><p><strong>temp_file</strong> (<em>str</em>) – Temperature file containing fit information</p></li>
+<li><p><strong>file_dir</strong> (<em>str</em>) – Full path to location of new image (and fits)</p></li>
+<li><p><strong>filename</strong> (<em>str</em>) – Name of new output file</p></li>
+<li><p><strong>color_map</strong> (<em>str</em>) – Matplotlib Colormap (default = Viridis)</p></li>
+<li><p><strong>stn</strong> (<em>int</em>) – Target Signal-to-Noise of WVT bins</p></li>
+<li><p><strong>wcs_image</strong> (<em>str</em>) – Path to initial image for WCS information (not used for anything else)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>PNG and FITS image of fitted temperatures</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tmp-bins.html" class="btn btn-neutral float-right" title="Binning routines" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="tmp-fits.html" class="btn btn-neutral float-left" title="Fitting routines" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Carter Rhea
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
