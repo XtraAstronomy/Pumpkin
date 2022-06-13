@@ -38,7 +38,7 @@ def fits_and_img(evt_file,src_reg):
     dmcopy()
 
 
-def main_extract(chandra_dir,source_dir,OBSIDS,source_reg):
+def main_extract(chandra_dir,source_dir,OBSIDS,source_reg, evt_file=None):
     '''
 
 
@@ -50,10 +50,13 @@ def main_extract(chandra_dir,source_dir,OBSIDS,source_reg):
         #Make sure region file is in reprocessed directory
         shutil.copy(source_dir+'/'+source_reg+'.reg',os.getcwd()+'/'+source_reg+'.reg')
         #Get event file
-        if len(obsid) == 4:
-            evt_file = "acisf0"+obsid+"_repro_evt2.fits"
+        if evt_file is None:
+            if len(obsid) == 4:
+                evt_file = "acisf0"+obsid+"_repro_evt2.fits"
+            else:
+                evt_file = "acisf"+obsid+"_repro_evt2.fits"
         else:
-            evt_file = "acisf"+obsid+"_repro_evt2.fits"
+            pass  # Event file already defined by user
         #Check that blank sky file is there. If not, make on
         if os.path.exists(os.getcwd()+'/'+obsid+'_blank.evt'):
             print(' Blanksky File Exists')
