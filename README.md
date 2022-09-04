@@ -57,8 +57,9 @@ What does the program do?
 - Create text files and plots of thermodynamic variables (temperature, abundance, normalization, density, pressure, cooling time)
 
 
-### Basic Thermodynamic Map Creation (in progress)
+### Basic Thermodynamic Map Creation 
 
+If you are interested in generating standard thermodynamic maps or fitting regions/annuli, I suggest you take a look at our other repo: [XtraAstronomy/AstronomyTools](https://github.com/XtraAstronomy/AstronomyTools).
 
 # Machine Learning Additions/Applications
 
