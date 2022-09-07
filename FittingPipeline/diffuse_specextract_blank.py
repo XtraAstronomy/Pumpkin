@@ -3,7 +3,7 @@ Create a spectrum with a corrected ARF for a diffuse low-count object
 '''
 import os
 import shutil
-from ciao_contrib.runtool import *
+from ciao_contrib.runtool import specextract, dmcopy, blanksky
 #------------------------------------------------------------------------------#
 def spec_basic(evt_file,src_reg,obsid):
     #Create basic spectrum with normal arf file (un-corrected)
