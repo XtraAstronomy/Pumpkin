@@ -47,7 +47,7 @@ def create_synthetic_sherpa(num_spec,exp_time,temp1,temp2,redshift,n_H,metal,ct)
     # Fake Spectra
     fake_pha("faked", arf1, rmf1, exposure=exp_time, grouped=False, backscal=1.0)
     # Save as fits file
-    save_arrays(output_dir+'/'+'sim_data_multi_'+str(ct)+'.fits', [get_model_plot("faked").xlo, get_model_plot("faked").y], ascii=False)
+    save_arrays(output_dir+'/'+'sim_data_multi_'+str(ct)+'.fits', [get_data_plot("faked").xlo, get_data_plot("faked").y], ascii=False)
     return None
 
 
