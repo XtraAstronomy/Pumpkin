@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import scipy.stats as sps
 import tensorflow as tf
 import numpy as np
-from BayesianCNN import create_probablistic_bnn_model
+from BayesianCNN import create_probablistic_model
 import bxa.sherpa as bxa
 
 from sherpa.astro.ui import set_model, load_pha, set_stat, ignore, notice, load_rmf, load_arf, thaw, get_model_plot, get_data
@@ -37,7 +37,7 @@ spectrum_counts = np.array([s1[1] for s1 in spectrum[35:550]])
 
 ## Step 3: Apply probabilistic Bayesian Convolutional Neural Network to extract Posterior on parameters
 
-bcnn = create_probablistic_bnn_model(hidden_units=[128, 256], num_filters=[4,16], filter_length=[5,3])
+bcnn = create_probablistic_model(hidden_units=[128, 256], num_filters=[4,16], filter_length=[5,3])
 bcnn.load_weights('PUMPKIN-I-NoDeconv')
 spectrum_counts_input = spectrum_counts.reshape(1, spectrum_counts.shape[0], 1)
 prediction_distribution = bcnn(tf.convert_to_tensor(spectrum_counts_input))

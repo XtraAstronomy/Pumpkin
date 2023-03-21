@@ -1,2 +1,2 @@
-model_checkpoint_path: "PUMPKIN-I-NoDeconv"
-all_model_checkpoint_paths: "PUMPKIN-I-NoDeconv"
+model_checkpoint_path: "PUMPKIN-I-MDN"
+all_model_checkpoint_paths: "PUMPKIN-I-MDN"

@@ -21,9 +21,9 @@ import bxa.sherpa as bxa
 
 from sherpa.astro.ui import set_model, load_pha, set_stat, ignore, notice, load_rmf, load_arf, thaw, get_model_plot, get_data
 from sherpa.astro.io import read_arf, read_rmf, read_pha
-
 from sherpa.astro import xspec
 
+import corner
 
 plt.rcParams['axes.facecolor'] = 'white'
 
@@ -77,3 +77,5 @@ plt.plot(x_,y_, label='model')
 plt.plot(get_data().x, get_data().y, label='observation')
 plt.legend()
 plt.show()
+
+corner.corner(results["samples"])

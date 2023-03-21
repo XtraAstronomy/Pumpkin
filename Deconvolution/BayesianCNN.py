@@ -6,10 +6,9 @@ import tensorflow as tf
 import tensorflow.keras as keras
 import tensorflow_probability as tfp
 
-def run_experiment(model, loss, train_dataset, valid_dataset, test_dataset, num_epochs, outputname):
-    learning_rate = 0.001
+def run_experiment(model, loss, learning_rate, train_dataset, valid_dataset, test_dataset, num_epochs, outputname=False):
     model.compile(
-        optimizer=keras.optimizers.RMSprop(learning_rate=learning_rate),
+        optimizer=keras.optimizers.Adamax(learning_rate=learning_rate),
         loss=loss,
         metrics=[keras.metrics.RootMeanSquaredError()],
     )
@@ -23,8 +22,9 @@ def run_experiment(model, loss, train_dataset, valid_dataset, test_dataset, num_
     print("Evaluating model performance...")
     _, rmse = model.evaluate(test_dataset, verbose=0)
     print(f"Test RMSE: {round(rmse, 3)}")
-
-    model.save_weights(outputname)
+    if outputname:
+        model.save_weights(outputname)
+    return rmse
 
 # Define the prior weight distribution as Normal of mean=0 and stddev=1.
 # Note that, in this example, the we prior distribution is not trainable,
@@ -60,7 +60,7 @@ def posterior(kernel_size, bias_size, dtype=None):
     return posterior_model
 
 
-def create_probablistic_bnn_model(hidden_units, num_filters, filter_length):
+def create_probablistic_bnn_model(hidden_units, num_filters, filter_length, train_size):
     """
     Args:
         hidden_units: Number of hidden nodes in each hidden layer (e.x. [128, 128] will make two layers with 128 nodes each)
@@ -81,17 +81,48 @@ def create_probablistic_bnn_model(hidden_units, num_filters, filter_length):
     features = keras.layers.Dropout(0.2)(features)
     for units in hidden_units:
         features = keras.layers.Dense(units, activation="relu")(features)
-    #features = tfp.layers.DenseVariational(
-    #    units=100,
-    #    make_prior_fn=prior,
-    #    make_posterior_fn=posterior,
-        #kl_weight=1 / train_size,
-    #    activation="sigmoid",
-    #)(features)
+    features = tfp.layers.DenseVariational(
+        units=100,
+        make_prior_fn=prior,
+        make_posterior_fn=posterior,
+        kl_weight=1 / train_size,
+        activation="sigmoid",
+    )(features)
     # Create a probabilistic output (Normal distribution), and use the `Dense` layer
     # to produce the parameters of the distribution.
     # We set units=2 to learn both the mean and the variance of the Normal distribution.
     distribution_params = keras.layers.Dense(units=4)(features)
+    outputs = tfp.layers.IndependentNormal(2)(distribution_params)
+    model = keras.Model(inputs=inputs, outputs=outputs)
+    return model
+
+
+def create_probablistic_model(hidden_units, num_filters, filter_length, train_size=0):
+    """
+    Args:
+        hidden_units: Number of hidden nodes in each hidden layer (e.x. [128, 128] will make two layers with 128 nodes each)
+        num_filters: Number of filters in the convolutional layer
+        filter_length: Length of each individual filter
+
+    Return:
+        Probabilistic Bayesian Neural Network
+    """
+    # Define input which is a vector with 515 elements representing the spectra
+    inputs = keras.Input(shape=(515,1))
+    features = keras.layers.BatchNormalization()(inputs)
+    # Create hidden layers with weight uncertainty using the DenseVariational layer.
+    for filter_, length_ in zip(num_filters, filter_length):
+        features = keras.layers.Conv1D(filters=filter_, kernel_size=length_, padding='same', activation='relu')(features)
+    features = keras.layers.AveragePooling1D(pool_size=2)(features)
+    features = keras.layers.Flatten()(features)
+    features = keras.layers.Dropout(0.2)(features)
+    for units in hidden_units:
+        features = keras.layers.Dense(units, activation="relu")(features)
+    # Create a probabilistic output (Normal distribution), and use the `Dense` layer
+    # to produce the parameters of the distribution.
+    # We set units=2 to learn both the mean and the variance of the Normal distribution.
+    distribution_params = keras.layers.Dense(units=4)(features)
+    print(distribution_params)
     outputs = tfp.layers.IndependentNormal(2)(distribution_params)
     model = keras.Model(inputs=inputs, outputs=outputs)
     return model
